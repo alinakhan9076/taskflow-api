@@ -1,6 +1,3 @@
-console.log("MY TASKFLOW SERVER");
-console.log("UPDATED SERVER FILE LOADED");
-
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -32,15 +29,6 @@ app.get("/api/health", (req, res) => {
     res.status(200).json({
         status: "ok",
     });
-});
-
-console.log("Health route loaded");
-console.log("Test route loaded");
-console.log("Tasks route loaded");
-
-
-app.get("/test", (req, res) => {
-    res.send("TEST WORKING");
 });
 
 app.get("/api/tasks",(req, res)=>{
