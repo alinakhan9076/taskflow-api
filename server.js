@@ -2,7 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
+const taskRoutes = require("./routes/taskRoutes");
+
 const mongoose = require("mongoose");
+const Task = require("./models/Task");
 require("dotenv").config();
 
 dotenv.config();
@@ -11,6 +14,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/tasks", taskRoutes);
 
 let tasks = [
     {
@@ -82,49 +87,35 @@ app.post("/api/tasks", (req, res) => {
     res.status(201).json(newTask);
 });
 
-app.put("/api/tasks/:id", (req, res) => {
+app.put("/api/tasks/:id", async (req,res) => {
+    try {
+        const updatedTask = await
+        Task.findByIdAndUpdate (
+            req.params.id,
+            req.body,
+            { new: true}
+        );
 
-    const id = Number(req.params.id);
+        res.json(updatedTask);
 
-    const task = tasks.find((task) => task.id === id
-    );
-
-    if(!task) {
-
-        return res.status(404).json({
-            error: "Task not found",
-        });
+    } catch (error) {
+        res.status(500).json({ message : error.message});
     }
-
-    task.text = req.body.text || task.text;
-    task.done = req.body.done ?? task.done;
-    task.category = req.body.category || task.category;
-
-    res.status(200).json(task);
 });
 
-app.delete("/api/tasks/:id", (req, res) => {
+app.delete("/api/tasks/:id", async (req, res) => {
+    try {
+        const deletedTask = await
+        Task.findByIdAndDelete(req.params.id);
 
-    const id = Number(req.params.id);
-
-    const index = tasks.findIndex((task) => task.id === id
-    );
-
-    if(index === -1){
-
-        return res.status(404).json({
-            error: "Task not found",
+        res.json({
+            message: "Task Deleted",
+            task: deletedTask
         });
+    } catch (error) {
+        res.status(500).json({message : error.message});
     }
-
-    tasks.splice(index, 1);
-
-    res.status(200).json({
-        message: "Task deleted successfully",
-    });
-
 });
-
 
 const PORT = process.env.PORT || 5000;
 
