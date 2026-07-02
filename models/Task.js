@@ -17,13 +17,11 @@ const taskSchema = new mongoose.Schema({
 
     category: {
         type: String,
-        enum:["work","personal","study"],
-        default: "personal"
+        enum:["Work","Personal","Study","Coding"],
+        default:"Study"
     }
 
-},
-
-    {
+}, {
         timestamps: true
     }
 );
