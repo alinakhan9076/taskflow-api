@@ -1,15 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 
 const taskRoutes = require("./routes/taskRoutes");
 
 const mongoose = require("mongoose");
 
-const Task = require("./models/Task");
 require("dotenv").config();
-
-dotenv.config();
 
 const app = express();
 
