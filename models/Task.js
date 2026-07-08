@@ -19,6 +19,12 @@ const taskSchema = new mongoose.Schema({
         type: String,
         enum:["Work","Personal","Study","Coding"],
         default:"Study"
+    },
+
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     }
 
 }, {

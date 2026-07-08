@@ -4,11 +4,16 @@ const router = express.Router();
 
 const Task = require("../models/Task");
 
-router.get("/", async (req,res) => {
+const auth = require("../middleware/auth");
+
+router.get("/", auth, async (req,res) => {
 
     try {
 
-    const tasks = await Task.find();
+    const tasks = await Task.find({
+    userId: req.user.id,
+
+     });
 
     res.status(200).json(tasks);
 
@@ -22,7 +27,7 @@ router.get("/", async (req,res) => {
 
 });
 
-router.post("/", async(req,res) => {
+router.post("/", auth, async(req,res) => {
 
     try {
 
@@ -32,7 +37,8 @@ router.post("/", async(req,res) => {
 
         const task = await Task.create({
             text, category,
-            done:false
+            done:false,
+            userId: req.user.id,
         });
 
         res.status(201).json(task);
@@ -48,13 +54,21 @@ router.post("/", async(req,res) => {
    
 });
 
-router.put("/:id",async(req,res) => {
+router.put("/:id", auth, async(req,res) => {
 
     try {
 
-        const task = await Task.findByIdAndUpdate(
-            req.params.id, req.body, {returnDocument:"after"}
-        );
+        const task = await Task.findOneAndUpdate({
+            _id: req.params.id,
+            userId: req.user.id,
+        },
+
+        req.body,
+        {
+            new: true,
+        }
+    );
+        
 
         if(!task){
 
@@ -74,13 +88,14 @@ router.put("/:id",async(req,res) => {
 
 });
 
-router.delete("/:id", async(req,res) => {
+router.delete("/:id", auth, async(req,res) => {
 
     try {
 
-        const task = await Task.findByIdAndDelete(
-            req.params.id
-        );
+        const task = await Task.findOneAndDelete({
+            _id: req.params.id,
+            userId: req.user.id,
+    });
 
         if(!task){
 
